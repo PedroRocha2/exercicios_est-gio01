@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\User\Pedro\Projects\exercicios_estágio01\headers\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,18 +128,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AppTestList.cpp" />
-    <ClCompile Include="Commands.cpp" />
-    <ClCompile Include="Interface.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Students.cpp" />
+    <ClInclude Include="headers\AppTestList.h" />
+    <ClInclude Include="headers\ClassList.h" />
+    <ClInclude Include="headers\Commands.h" />
+    <ClInclude Include="headers\Interface.h" />
+    <ClInclude Include="headers\Students.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AppTestList.h" />
-    <ClInclude Include="ClassList.h" />
-    <ClInclude Include="Commands.h" />
-    <ClInclude Include="Interface.h" />
-    <ClInclude Include="Students.h" />
+    <ClCompile Include="sources\AppTestList.cpp" />
+    <ClCompile Include="sources\Commands.cpp" />
+    <ClCompile Include="sources\Interface.cpp" />
+    <ClCompile Include="sources\main.cpp" />
+    <ClCompile Include="sources\Students.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -67,7 +67,6 @@ int Interface::printStudentDecision() const
              << "2 - listar do fim\n";
    std::cin >> choice;
 
-   system("cls");
    return choice;
 }
 
