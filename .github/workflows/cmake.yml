@@ -1,0 +1,36 @@
+name: CMake Build and Test with Ninja
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  # Customize o tipo de build aqui (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout do código fonte
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Instalação do Ninja Build System
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@v5
+
+    # Configuração e compilação do projeto com Ninja
+    - name: Build Project
+      uses: threeal/cmake-action@v2.1.0
+      with:
+        generator: Ninja
+        build-type: ${{env.BUILD_TYPE}} # Usa o tipo de build configurado no workflow
+
+    # Testa o projeto (se configurado no CMake)
+    - name: Run tests
+      working-directory: build
+      run: ctest -C ${{env.BUILD_TYPE}}
