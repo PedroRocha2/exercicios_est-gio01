@@ -2,46 +2,43 @@
 #include "AppTestList.h"
 #include "ClassList.h"
 
+ClassList& getSelectedClassList(int choice, ClassList& class_a, ClassList& class_b)
+{
+   return (choice == 1) ? class_a : class_b;
+}
+
 void CommandsAddStudent::execute(ClassList& class_a, ClassList& class_b)
 {
    Student* newStudent= app.getUI().createStudent();
    ClassList::Nodelist* nl= new ClassList::Nodelist(*newStudent);
-   ClassList* selected_list;
    int choice= app.getUI().classListDecision();
-
-   if (choice == 1) {
-      selected_list= &class_a;
-   }
-   else
-   {
-      selected_list= &class_b;
-   }
+   ClassList& selected_list= getSelectedClassList(choice, class_a, class_b);
 
    switch (app.getUI().addStudentDecision()) {
    case 1:
-      if (selected_list->initial_element) {
-         nl->next= selected_list->initial_element;
+      if (selected_list.initial_element) {
+         nl->next= selected_list.initial_element;
          nl->prev= nullptr;
-         selected_list->initial_element->prev= nl;
-         selected_list->initial_element= nl;
+         selected_list.initial_element->prev= nl;
+         selected_list.initial_element= nl;
       }
       else {
-         selected_list->initial_element= selected_list->final_element= selected_list->cursor= nl;
+         selected_list.initial_element= selected_list.final_element= selected_list.cursor= nl;
          nl->prev= nl->next= nullptr;
       }
 
       break;
 
    case 2:
-      if (selected_list->final_element) {
-         nl->prev= selected_list->final_element;
+      if (selected_list.final_element) {
+         nl->prev= selected_list.final_element;
          nl->next= nullptr;
-         selected_list->final_element->next = nl;
-         selected_list->final_element= nl;
+         selected_list.final_element->next = nl;
+         selected_list.final_element= nl;
       }
 
       else {
-         selected_list->initial_element= selected_list->final_element= selected_list->cursor= nl;
+         selected_list.initial_element= selected_list.final_element= selected_list.cursor= nl;
          nl->prev= nl->next= nullptr;
       }
       
@@ -50,11 +47,11 @@ void CommandsAddStudent::execute(ClassList& class_a, ClassList& class_b)
    case 3:
       int indice= app.getUI().indiceDecision();
 
-      int parameter= selected_list->cont / 2;
+      int parameter= selected_list.cont / 2;
 
       if (indice > parameter) {
-         ClassList::Nodelist* temp= selected_list->final_element;
-         for (int i= selected_list->cont; i > indice; i--) {
+         ClassList::Nodelist* temp= selected_list.final_element;
+         for (int i= selected_list.cont; i > indice; i--) {
             temp= temp->prev;
          }
          nl->prev= temp->prev;
@@ -66,7 +63,7 @@ void CommandsAddStudent::execute(ClassList& class_a, ClassList& class_b)
       }
 
       else {
-         ClassList::Nodelist* temp= selected_list->initial_element;
+         ClassList::Nodelist* temp= selected_list.initial_element;
          for (int i= 0; i < indice; i++) {
             temp= temp->next;
          }
@@ -80,26 +77,19 @@ void CommandsAddStudent::execute(ClassList& class_a, ClassList& class_b)
       
       break;
    }
-   selected_list->cont++;
+   selected_list.cont++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CommandsPrintStudent::execute(ClassList& class_a,ClassList& class_b)
 {
-   ClassList* selected_list;
-   int choice = app.getUI().classListDecision();
-
-   if (choice == 1) {
-      selected_list = &class_a; 
-   }
-   else {
-      selected_list = &class_b; 
-   }
+   int choice= app.getUI().classListDecision();
+   ClassList& selected_list= getSelectedClassList(choice,class_a,class_b);
 
    switch (app.getUI().printStudentDecision()) {
    case 1: {
-      ClassList::Nodelist* temp = selected_list->initial_element;
+      ClassList::Nodelist* temp = selected_list.initial_element;
 
       while (temp != nullptr) {
          temp->s.PrintInfo();
@@ -108,7 +98,7 @@ void CommandsPrintStudent::execute(ClassList& class_a,ClassList& class_b)
       break;
    }
    case 2: {
-      ClassList::Nodelist* temp = selected_list->final_element;
+      ClassList::Nodelist* temp = selected_list.final_element;
 
       while (temp != nullptr) {
          temp->s.PrintInfo();
@@ -123,63 +113,56 @@ void CommandsPrintStudent::execute(ClassList& class_a,ClassList& class_b)
 
 void CommandsDeleteStudent::execute(ClassList& class_a,ClassList& class_b)
 {
-   ClassList* selected_list;
-   int choice = app.getUI().classListDecision();
-
-   if (choice == 1) {
-      selected_list = &class_a;
-   }
-   else {
-      selected_list = &class_b;
-   }
+   int choice= app.getUI().classListDecision();
+   ClassList& selected_list= getSelectedClassList(choice,class_a,class_b);
 
    switch (app.getUI().deleteStudentDecision()) {
    case 1: {
-      if (selected_list->initial_element) {
-         ClassList::Nodelist* temp = selected_list->initial_element->next;
-         delete selected_list->initial_element;
-         selected_list->initial_element = temp;
+      if (selected_list.initial_element) {
+         ClassList::Nodelist* temp = selected_list.initial_element->next;
+         delete selected_list.initial_element;
+         selected_list.initial_element = temp;
          if (temp) {
             temp->prev = nullptr;
          }
          else {
-            selected_list->final_element = nullptr;
+            selected_list.final_element = nullptr;
          }
       }
       break;
    }
    case 2: {
-      if (selected_list->final_element) {
-         ClassList::Nodelist* temp = selected_list->final_element->prev;
-         delete selected_list->final_element;
-         selected_list->final_element = temp;
+      if (selected_list.final_element) {
+         ClassList::Nodelist* temp = selected_list.final_element->prev;
+         delete selected_list.final_element;
+         selected_list.final_element = temp;
          if (temp) {
             temp->next = nullptr;
          }
          else {
-            selected_list->initial_element = nullptr; 
+            selected_list.initial_element = nullptr; 
          }
       }
       break;
    }
    case 3: {
       int indice = app.getUI().indiceDecision();
-      if (indice < 0 || indice >= selected_list->cont) {
+      if (indice < 0 || indice >= selected_list.cont) {
          std::cerr << "Índice fora do intervalo!" << std::endl;
          break;
       }
 
       ClassList::Nodelist* choose = nullptr;
-      int parameter = selected_list->cont / 2;
+      int parameter = selected_list.cont / 2;
 
       if (indice > parameter) {
-         choose = selected_list->final_element;
-         for (int i = selected_list->cont - 1; i > indice; i--) {
+         choose = selected_list.final_element;
+         for (int i = selected_list.cont - 1; i > indice; i--) {
             choose = choose->prev;
          }
       }
       else {
-         choose = selected_list->initial_element;
+         choose = selected_list.initial_element;
          for (int i = 0; i < indice; i++) {
             choose = choose->next;
          }
@@ -190,14 +173,14 @@ void CommandsDeleteStudent::execute(ClassList& class_a,ClassList& class_b)
             choose->prev->next = choose->next;
          }
          else {
-            selected_list->initial_element = choose->next;
+            selected_list.initial_element = choose->next;
          }
 
          if (choose->next) {
             choose->next->prev = choose->prev;
          }
          else {
-            selected_list->final_element = choose->prev;
+            selected_list.final_element = choose->prev;
          }
 
          delete choose;
@@ -206,8 +189,8 @@ void CommandsDeleteStudent::execute(ClassList& class_a,ClassList& class_b)
    }
    }
 
-   if (selected_list->cont > 0) {
-      selected_list->cont--;
+   if (selected_list.cont > 0) {
+      selected_list.cont--;
    }
 }
 
@@ -216,21 +199,13 @@ void CommandsDeleteStudent::execute(ClassList& class_a,ClassList& class_b)
 
 void CommandsOrderAlphabet::execute(ClassList& class_a,ClassList& class_b)
 {
-   ClassList* selected_list;
    int choice= app.getUI().classListDecision();
-
-   if (choice == 1) {
-      selected_list= &class_a;
-   }
-   else
-   {
-      selected_list= &class_b;
-   }
+   ClassList& selected_list= getSelectedClassList(choice,class_a,class_b);
    
    bool swapped; 
    do {
       swapped= false;
-      ClassList::Nodelist* current= selected_list->initial_element;
+      ClassList::Nodelist* current= selected_list.initial_element;
       while (current->next != nullptr) {
          if (current->s.getName() > current->next->s.getName()) {
             std::swap(current->s,current->next->s);
@@ -245,28 +220,20 @@ void CommandsOrderAlphabet::execute(ClassList& class_a,ClassList& class_b)
 
 void CommandsConcate::execute(ClassList& class_a,ClassList& class_b)
 {
-   ClassList* selected_list;
    int choice= app.getUI().classListDecision();
-
-   if (choice == 1) {
-      selected_list= &class_a;
-   }
-   else
-   {
-      selected_list= &class_b;
-   }
+   ClassList& selected_list= getSelectedClassList(choice,class_a,class_b);
 
    switch (app.getUI().concateDecision()) {
    case 1:
-      selected_list->final_element->next= class_b.initial_element;
-      class_b.initial_element->prev= selected_list->final_element;
+      selected_list.final_element->next= class_b.initial_element;
+      class_b.initial_element->prev= selected_list.final_element;
       class_b.initial_element= nullptr;
       class_b.final_element= nullptr;
 
       break;
    case 2:
-      selected_list->final_element->next= class_a.initial_element;
-      class_a.initial_element->prev= selected_list->final_element;
+      selected_list.final_element->next= class_a.initial_element;
+      class_a.initial_element->prev= selected_list.final_element;
       class_a.initial_element= nullptr;
       class_a.final_element= nullptr;
 
@@ -279,18 +246,10 @@ void CommandsConcate::execute(ClassList& class_a,ClassList& class_b)
 
 void CommandsCleanClassList::execute(ClassList& class_a, ClassList& class_b)
 {
-   ClassList* selected_list;
    int choice= app.getUI().classListDecision();
+   ClassList& selected_list= getSelectedClassList(choice,class_a,class_b);
 
-   if (choice == 1) {
-      selected_list= &class_a;
-   }
-   else
-   {
-      selected_list= &class_b;
-   }
-
-   ClassList::Nodelist* temp= selected_list->initial_element;
+   ClassList::Nodelist* temp= selected_list.initial_element;
 
    while (temp->next != nullptr) {
       ClassList::Nodelist* actual= temp;
